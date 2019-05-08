@@ -1,73 +1,105 @@
 import React, { Component } from "react";
-import { fetchMovies } from "../actions";
+import { fetchMovies, requestSearch } from "../actions";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import {
-  Loader,
-  Grid,
-  Container,
-  Card,
-  Image,
-  Pagination
-} from "semantic-ui-react";
+import { Grid, Container, Card, Image, Label, Loader } from "semantic-ui-react";
+import Pagination from "./Pagination";
 import FavoriteButton from "./FavoriteButton";
+import { withRouter } from "react-router-dom";
 
 class MovieList extends Component {
   componentDidMount() {
-    this.props.fetchMovies();
+    const { pathname } = this.props.location;
+    // if (pathname.match("q=")) return null;
+    pathname.match("q=")
+      ? this.props.requestSearch(pathname.substr(pathname.lastIndexOf("=") + 1))
+      : this.props.fetchMovies(this.takeLocation(pathname));
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.pathname !== this.props.location.pathname) {
+      this.props.fetchMovies(this.takeLocation(nextProps.location.pathname));
+    }
   }
 
-  renderMovies() {
+  takeLocation = x => {
+    const locw = x.substr(x.lastIndexOf("/") + 1);
+    return locw;
+  };
+  renderCard = () => {
     const { results } = this.props.movies;
+
     if (!results) {
-      return <Loader size="medium" />;
+      return <div />;
     }
     return results.map(movie => {
       return (
         <Grid.Column key={movie.id}>
-          <FavoriteButton {...movie} />
-          <button onClick={this.handleClick}>{movie.id}</button>
-          <Card>
+          <Card color="black" as="a" to={`/movie/${movie.id}`}>
+            <Label>
+              <FavoriteButton {...movie} />
+            </Label>
             <Image
               as={Link}
               to={`/movie/${movie.id}`}
-              src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
+              style={{ minHeight: 305 }}
+              src={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w300/${movie.poster_path}`
+                  : "https://react.semantic-ui.com/images/wireframe/image.png"
+              }
             />
-            <Card.Content>
-              <Card.Header>{movie.title}</Card.Header>
-              <Card.Description>{movie.overview}</Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-              Average rating: {movie.vote_average}
-            </Card.Content>
+            <Label
+              attached="bottom"
+              to={`/movie/${movie.id}`}
+              style={{ textAlign: "center" }}
+            >
+              {movie.title}{" "}
+            </Label>
           </Card>
         </Grid.Column>
       );
     });
+  };
+  renderMovies() {
+    if (!this.props.movies.isFetched) {
+      return (
+        <Container
+          style={{
+            backgroundColor: "rgba(52, 52, 52, 0.8)",
+            minHeight: 700,
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
+          <Loader size="massive" inverted active inline="centered" />
+        </Container>
+      );
+    } else {
+      return (
+        <Container style={{ backgroundColor: "rgba(52, 52, 52, 0.8)" }}>
+          <Grid doubling columns={5}>
+            {this.renderCard()}
+          </Grid>
+          <div style={{ textAlign: "center" }}>
+            <Pagination />
+          </div>
+        </Container>
+      );
+    }
   }
 
+  
   render() {
-    return (
-      <Container>
-        <Pagination
-          onClick={this.handleClick}
-          defaultActivePage={1}
-          totalPages={3}
-        />
-        <>{this.renderPagination}</>
-        <Grid doubling columns={5}>
-          {this.renderMovies()}
-        </Grid>
-      </Container>
-    );
+    return <>{this.renderMovies()}</>;
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return { movies: state.movies };
 };
-export default connect(
-  mapStateToProps,
-  { fetchMovies }
-  //,fetchMovies
-)(MovieList);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { fetchMovies, requestSearch }
+  )(MovieList)
+);

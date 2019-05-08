@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { fetchMovies } from "../actions";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import {
+import {Label,
   Grid,
   Container,
   Card,
@@ -15,26 +15,32 @@ class MovieList extends Component {
   renderMovies() {
     const { favMoviez } = this.props;
     if (favMoviez.length<=0) {
-      return <div>Favorite list is empty</div>;
+      return <><div style={{marginTop:30,display:'block',textAlign: 'center',fontSize:40, color:'#f3a680'}}>Favorite list is empty</div></>;
     }
     return favMoviez.map(movie => {
       return (
         <Grid.Column key={movie.id}>
-          <FavoriteButton {...movie} />
-          <button onClick={this.handleClick}>{movie.id}</button>
-          <Card>
+          <Card color="black" as='a'>
+            <Label>
+              <FavoriteButton {...movie} />
+            </Label>
             <Image
+              style={{ minHeight: 305 }}
               as={Link}
               to={`/movie/${movie.id}`}
-              src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
+              src={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w300/${movie.poster_path}`
+                  : "https://react.semantic-ui.com/images/wireframe/image.png"
+              }
             />
-            <Card.Content>
-              <Card.Header>{movie.title}</Card.Header>
-              <Card.Description>{movie.overview}</Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-              Average rating: {movie.vote_average}
-            </Card.Content>
+            <Label
+              attached="bottom"
+              to={`/movie/${movie.id}`}
+              style={{ textAlign: "center" }}
+            >
+              {movie.title}{" "}
+            </Label>
           </Card>
         </Grid.Column>
       );
@@ -42,12 +48,13 @@ class MovieList extends Component {
   }
 
   render() {
-    return (
-      <Container>
+    return (<div >
+      <Container >
         <Grid doubling columns={5}>
           {this.renderMovies()}
         </Grid>
       </Container>
+      </div>
     );
   }
 }
@@ -58,5 +65,5 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   { fetchMovies }
-  //,fetchMovies
+  
 )(MovieList);

@@ -1,28 +1,39 @@
-import React, { Component } from "react";
+import React, { Component} from "react";
 import logo from "../pictures/logo.png";
-import { Link } from "react-router-dom";
-import { Menu } from "semantic-ui-react";
+import { NavLink,Link } from "react-router-dom";
+import { Menu,Icon,Container} from "semantic-ui-react";
+import {withRouter} from 'react-router-dom'
+
 import SearchBar from "./SearchBar";
 class Menus extends Component {
+  componentWillReceiveProps(nextProps) {
+    
+    if (nextProps.location.pathname !== this.props.location.pathname) {
+    
+    }
+  }
+
   render() {
     return (
-      <>
-        <Menu borderless color="olive" inverted>
-          <Menu.Item as={Link} to="/">
+      <Container>
+        <Menu style={{marginBottom:35}} borderless color="blue" inverted  >
+          <Menu.Item as={Link} to={'/'} >
             <img src={logo} alt="logo" />
           </Menu.Item>
 
-          <Menu.Item as={Link} to="/favMovies">
-            <h3>Favorite Movies ★</h3>
+          <Menu.Item as={NavLink} to="/favMovies">
+          <Icon name='heart' />
+          Favorite Movies
           </Menu.Item>
 
-          <Menu.Item position="right">
+          <Menu.Item position="right" style={{minWidth:170}} >
             <SearchBar />
           </Menu.Item>
-        </Menu>
-      </>
+        </Menu></Container>
+        
+        
     );
   }
 }
 
-export default Menus;
+export default withRouter(Menus);

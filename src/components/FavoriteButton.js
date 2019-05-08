@@ -1,24 +1,41 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { addToFavorite, removeFromFavorite } from "../actions/";
+import { Icon, Popup } from "semantic-ui-react";
 class FavoriteButton extends Component {
+  
   renderIsFavorite() {
+  
     if (!this.props) {
-      return <div>spinner</div>;
+      return null;
     }
     const { id } = this.props;
     const { favMoviez } = this.props;
-    if (!favMoviez.find(movie => movie.id === id)) {
+    if (!favMoviez.some(movie => movie.id === id)) {
       return (
-        <button onClick={() => this.props.addToFavorite(this.props)}>
-          ADD
-        </button>
+        <Popup
+          trigger={
+            <Icon
+              color='black'
+              name="heart"
+              size="large"
+              inverted
+              
+              onClick={() => this.props.addToFavorite(this.props)}
+            />
+          }
+          content="Add movie to favorite"
+        />
       );
     }
     return (
-      <button onClick={() => this.props.removeFromFavorite(this.props.id)}>
-        DELETE
-      </button>
+      <Icon
+        color="red"
+        name="heart"
+        size="large"
+        inverted
+        onClick={() => this.props.removeFromFavorite(this.props.id)}
+      />
     );
   }
 
