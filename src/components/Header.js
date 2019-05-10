@@ -16,19 +16,20 @@ class Menus extends Component {
   render() {
     return (
       <Container>
-        <Menu style={{marginBottom:35}} borderless color="blue" inverted  >
+        <Menu  style={{marginBottom:35}} borderless color="blue" inverted  >
           <Menu.Item as={Link} to={'/'} >
             <img src={logo} alt="logo" />
           </Menu.Item>
 
-          <Menu.Item as={NavLink} to="/favMovies">
+          <Menu.Item  as={NavLink} to="/favMovies">
           <Icon name='heart' />
-          Favorite Movies
+          
+          
           </Menu.Item>
-
-          <Menu.Item position="right" style={{minWidth:170}} >
+          <Menu.Item  position="right"  >
             <SearchBar />
           </Menu.Item>
+          
         </Menu></Container>
         
         

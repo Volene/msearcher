@@ -5,7 +5,6 @@ import Header from "./Header";
 import MovieList from "./MovieList";
 import MoviePage from "./MoviePage";
 import FavMovies from "./FavMovies";
-// import MovieListF from "./movie-list";
 
 const App = () => {
   return (

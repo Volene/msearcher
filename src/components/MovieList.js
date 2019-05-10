@@ -10,13 +10,13 @@ import { withRouter } from "react-router-dom";
 class MovieList extends Component {
   componentDidMount() {
     const { pathname } = this.props.location;
-    // if (pathname.match("q=")) return null;
     pathname.match("q=")
       ? this.props.requestSearch(pathname.substr(pathname.lastIndexOf("=") + 1))
       : this.props.fetchMovies(this.takeLocation(pathname));
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.location.pathname !== this.props.location.pathname) {
+    if (nextProps.location.pathname !== this.props.location.pathname 
+      && !nextProps.location.pathname.match('q')) {
       this.props.fetchMovies(this.takeLocation(nextProps.location.pathname));
     }
   }
@@ -76,11 +76,13 @@ class MovieList extends Component {
       );
     } else {
       return (
-        <Container style={{ backgroundColor: "rgba(52, 52, 52, 0.8)" }}>
+        <Container
+          style={{ margin: 25, backgroundColor: "rgba(52, 52, 52, 0.8)" }}
+        >
           <Grid doubling columns={5}>
             {this.renderCard()}
           </Grid>
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: "center", boxSizing: "border-box" }}>
             <Pagination />
           </div>
         </Container>
@@ -88,7 +90,6 @@ class MovieList extends Component {
     }
   }
 
-  
   render() {
     return <>{this.renderMovies()}</>;
   }
