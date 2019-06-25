@@ -1,3 +1,4 @@
+## Before start put your TMDB API KEY TO src/api/tmdb.js 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
